@@ -211,9 +211,11 @@ static TWTRTwitter *sharedTwitter;
 
 - (void)userSessionVerifierNeedsSessionVerification:(TWTRUserSessionVerifier *)userSessionVerifier
 {
+    NSLog(@"%s [Line %d]", __PRETTY_FUNCTION__, __LINE__);
     TWTRParameterAssertOrReturn(self.sessionStore);
 
     NSArray *sessions = [self.sessionStore existingUserSessions];
+    NSLog(@"%s [Line %d] Success assertion. existing sessions: %@", __PRETTY_FUNCTION__, __LINE__, sessions);
 
     for (id<TWTRAuthSession> session in sessions) {
         [self pingVerifySessionForAuthSession:session];
@@ -225,6 +227,7 @@ static TWTRTwitter *sharedTwitter;
     TWTRAPIClient *client = [[TWTRAPIClient alloc] initWithUserID:session.userID];
 
     [client verifySessionWithCompletion:^(id object, NSError *error) {
+        NSLog(@"%s [Line %d] %@ success: %@, error: %@", __PRETTY_FUNCTION__, __LINE__, object ? @"YES" : @"NO", error);
 #if DEBUG
         if (error) {
             NSLog(@"Error verifying user session %@: %@", session.userID, error);

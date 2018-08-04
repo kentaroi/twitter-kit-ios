@@ -85,6 +85,12 @@
     return @{TWTRAuthOAuthTokenKey: self.authToken, TWTRAuthOAuthSecretKey: self.authTokenSecret, TWTRAuthAppOAuthScreenNameKey: self.userName, TWTRAuthAppOAuthUserIDKey: self.userID};
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"authToken: %@, authTokenSecret: %@, screenName: %@, userID: %@",
+                                      self.authToken, self.authTokenSecret, self.userName, self.userID];
+}
+
 #pragma mark - NSCoding
 - (id)initWithCoder:(NSCoder *)coder
 {

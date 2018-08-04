@@ -586,6 +586,7 @@ static NSString *const TWTRSessionStoreGuestUserName = @"com.twitter.sdk.ios.cor
     TWTRParameterAssertOrReturnValue(query && predicate, @[]);
 
     NSArray *keychainItems = [self keychainItemsMatchingQuery:query];
+    NSLog(@"%s [Line %d] keychainItems: %@", __PRETTY_FUNCTION__, __LINE__, keychainItems);
     [self updateKeychainItemsAccessGroupIfNeeded:keychainItems];
 
     return [self transformedKeychainItems:keychainItems passingTest:predicate];
@@ -606,6 +607,7 @@ static NSString *const TWTRSessionStoreGuestUserName = @"com.twitter.sdk.ios.cor
 
 - (NSArray *)transformedKeychainItems:(NSArray *)keychainItems passingTest:(BOOL (^)(id obj))predicate
 {
+    NSLog(@"%s [Line %d]", __PRETTY_FUNCTION__, __LINE__);
     TWTRParameterAssertOrReturnValue(predicate, @[]);
 
     NSArray *sortedKeychainItems = [keychainItems sortedArrayUsingComparator:^NSComparisonResult(TWTRGenericKeychainItem *obj1, TWTRGenericKeychainItem *obj2) {
@@ -616,9 +618,13 @@ static NSString *const TWTRSessionStoreGuestUserName = @"com.twitter.sdk.ios.cor
 
     [sortedKeychainItems enumerateObjectsUsingBlock:^(TWTRGenericKeychainItem *item, NSUInteger idx, BOOL *stop) {
         id<TWTRBaseSession> session = [NSKeyedUnarchiver unarchiveObjectWithData:item.secret];
+        NSLog(@"%s [Line %d] Session: %@", __PRETTY_FUNCTION__, __LINE__, session);
 
         if (session && predicate(session)) {
             [sessions addObject:session];
+            NSLog(@"Matched!");
+        } else {
+            NSLog(@"%s [Line %d] Unmatched session: %@", __PRETTY_FUNCTION__, __LINE__, session);
         }
     }];
 

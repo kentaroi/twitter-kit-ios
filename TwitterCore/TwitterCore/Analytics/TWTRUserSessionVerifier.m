@@ -92,6 +92,7 @@ NSTimeInterval const TWTRUserSessionVerifierDefaultDelay = 3;
 - (void)verifyNowIfNecessary
 {
     BOOL isTimeToVerifyAgain = [self isPastMaxDesiredInterval];
+    NSLog(@"%s [Line %d] timeToVerifyAgain: %@", __PRETTY_FUNCTION__, __LINE__, isTimeToVerifyAgain ? @"YES" : @"NO");
 
     if (isTimeToVerifyAgain) {
         [self.delegate userSessionVerifierNeedsSessionVerification:self];
@@ -102,6 +103,14 @@ NSTimeInterval const TWTRUserSessionVerifierDefaultDelay = 3;
 
 - (BOOL)isPastMaxDesiredInterval
 {
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    df.locale = NSLocale.currentLocale;
+    df.timeZone = NSTimeZone.localTimeZone;
+    df.dateStyle = NSDateFormatterMediumStyle;
+    df.timeStyle = NSDateFormatterShortStyle;
+    NSString *lastTimestampString = [df stringFromDate:self.lastVerifiedTimestamp];
+    NSLog(@"%s [Line %d] lastVerifiedTimestamp: %@", __PRETTY_FUNCTION__, __LINE__, lastTimestampString);
+
     if (self.lastVerifiedTimestamp) {
         NSDate *currentDate = [NSDate date];
         const BOOL hasExceededMaxDesiredInterval = ![TWTRDateUtil isDate:currentDate withinInterval:self.maxDesiredInterval fromDate:self.lastVerifiedTimestamp];
